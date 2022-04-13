@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.generation.BlogPessoal.model.Postagem;
 import org.generation.BlogPessoal.repository.PostagemRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,35 +19,44 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/postagens")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class PostagemController {
-
+	
 	@Autowired
 	private PostagemRepository repository;
 	
 	@GetMapping
-	public ResponseEntity<List<Postagem>> GetAll(){
+	public ResponseEntity<List<Postagem>> getAll(){
 		return ResponseEntity.ok(repository.findAll());
-		
+
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Postagem> GetById(@PathVariable long id){
-		return repository.findById(id).map(resp-> ResponseEntity.ok(resp)).orElse(ResponseEntity.notFound().build());
+	public ResponseEntity<Postagem> getById(@PathVariable Long id){ 		
+		return repository.findById(id)
+				.map(resp -> ResponseEntity.ok(resp))
+				.orElse(ResponseEntity.notFound().build());
 	}
 	
 	@GetMapping("/titulo/{titulo}")
-	public ResponseEntity<List <Postagem>> GetById(@PathVariable String titulo){
-		return ResponseEntity.ok(repository.findAllByTituloContainingIgonreCase(titulo));
+	public ResponseEntity<List<Postagem>> getByTitulo(@PathVariable String titulo){
+		
+		return ResponseEntity.ok(repository.findAllByTituloContainingIgnoreCase(titulo));
+		
 	}
 	
 	@PostMapping
-	public ResponseEntity<Postagem> post (@RequestBody Postagem postagem){
+	public ResponseEntity<Postagem> post(@RequestBody Postagem postagem){
+		
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
+		
 	}
 	
 	@PutMapping
-	public ResponseEntity<Postagem> put (@RequestBody Postagem postagem){
+	public ResponseEntity<Postagem> put(@RequestBody Postagem postagem){
+		
 		return ResponseEntity.status(HttpStatus.OK).body(repository.save(postagem));
+		
 	}
+
 }
